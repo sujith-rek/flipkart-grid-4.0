@@ -22,6 +22,9 @@ contract ProductManufacture{
     //Mapping a product with refernce to a tokenID
     mapping (uint => WarrantyCard) _product; 
 
+    //mapping holding the details of all tokens owned by owner
+    mapping (address => uint[]) ownerOf;
+
     //Event announcing the manufacturing of a product
     event newProductCreated(
         uint _tokenId, 
@@ -56,6 +59,7 @@ contract ProductManufacture{
 
             _product[_tokenId].ManufacturersAddress = msg.sender;
             _product[_tokenId].CurrentOwner = msg.sender;
+            ownerOf[msg.sender].push(_tokenId); 
             _product[_tokenId].ManufacturerStatus = true;
     }
 
@@ -79,7 +83,7 @@ contract ProductManufacture{
     //Function to view warranty status
     function warrantyStatus(
         uint _tokenId
-        ) external view returns(bool){
+        ) public view returns(bool){
             if((_product[_tokenId].FirstPurchaseDate + _product[_tokenId].WarrantyPeriod) > block.timestamp){
                 return true;
             } else {
@@ -106,6 +110,20 @@ contract ProductManufacture{
             _product[_tokenId].WarrantyActivated = true;
     }    
 
+    function removeUserToken(
+        uint _tokenId,
+        address _owner
+        ) internal {
+            uint numberOfTokens = ownerOf[_owner].length;
+            for(uint i=0; i < numberOfTokens ; i++){
+                if(ownerOf[_owner][i] == _tokenId){
+                    ownerOf[_owner][i] = ownerOf[_owner][numberOfTokens - 1];
+                    ownerOf[_owner].pop();
+                    break;
+                }
+            }
+    }         
+
     //Function to change Ownership or sell the Contract
     function sendContract(
         uint _tokenId, 
@@ -115,7 +133,9 @@ contract ProductManufacture{
                 setFirstPurchaseDate(_tokenId);
             }
             _product[_tokenId].PastOwners.push(_product[_tokenId].CurrentOwner);
+            removeUserToken(_tokenId, _product[_tokenId].CurrentOwner);
             _product[_tokenId].CurrentOwner = recieversAddress ;
+            ownerOf[recieversAddress].push(_tokenId);
     }
     
 }

@@ -8,6 +8,7 @@ import "./ProductManufacture.sol";
 //All functions are only view
 contract ProductDetailsViewer is ProductManufacture{
 
+    //Address when the product isn't created
     address INCOMPLETE = 0x0000000000000000000000000000000000000000;
 
     //To view Manufacturers address
@@ -19,6 +20,12 @@ contract ProductDetailsViewer is ProductManufacture{
 
             return _product[_tokenId].ManufacturersAddress;
     }
+
+    //To view all the tokens user holds
+    function viewMyTokens(
+        ) external view returns(uint[] memory){
+            return ownerOf[msg.sender];
+        }
 
     //To view Product name
     function viewProductDetails(
