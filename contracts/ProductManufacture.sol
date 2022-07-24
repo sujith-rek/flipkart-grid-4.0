@@ -79,7 +79,7 @@ contract ProductManufacture{
     //Function to view warranty status
     function warrantyStatus(
         uint _tokenId
-        )public view returns(bool){
+        ) external view returns(bool){
             if((_product[_tokenId].FirstPurchaseDate + _product[_tokenId].WarrantyPeriod) > block.timestamp){
                 return true;
             } else {
