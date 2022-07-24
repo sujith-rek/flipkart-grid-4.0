@@ -22,6 +22,9 @@ contract ProductManufacture{
     //Mapping a product with refernce to a tokenID
     mapping (uint => WarrantyCard) _product; 
 
+    //Mapping to count number of tokens user own
+    mapping (address => uint) userOwns;
+
     //mapping holding the details of all tokens owned by owner
     mapping (address => uint[]) ownerOf;
 
@@ -60,6 +63,7 @@ contract ProductManufacture{
             _product[_tokenId].ManufacturersAddress = msg.sender;
             _product[_tokenId].CurrentOwner = msg.sender;
             ownerOf[msg.sender].push(_tokenId); 
+            userOwns[msg.sender]++;
             _product[_tokenId].ManufacturerStatus = true;
     }
 
@@ -134,8 +138,10 @@ contract ProductManufacture{
             }
             _product[_tokenId].PastOwners.push(_product[_tokenId].CurrentOwner);
             removeUserToken(_tokenId, _product[_tokenId].CurrentOwner);
+            userOwns[msg.sender]--;
             _product[_tokenId].CurrentOwner = recieversAddress ;
             ownerOf[recieversAddress].push(_tokenId);
+            userOwns[recieversAddress]++;
     }
     
 }

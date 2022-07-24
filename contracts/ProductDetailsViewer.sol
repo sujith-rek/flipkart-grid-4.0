@@ -24,6 +24,8 @@ contract ProductDetailsViewer is ProductManufacture{
     //To view all the tokens user holds
     function viewMyTokens(
         ) external view returns(uint[] memory){
+            if(userOwns[msg.sender] == 0)
+                revert("You don't own any products");
             return ownerOf[msg.sender];
         }
 
@@ -52,6 +54,8 @@ contract ProductDetailsViewer is ProductManufacture{
         )external view returns(address[] memory){
             uint numberOfPreviousOwners = _product[_tokenId].PastOwners.length;
 
+            if(_product[_tokenId].CurrentOwner == INCOMPLETE)
+                revert("The product You are searching for isn't created yet");
             if(numberOfPreviousOwners == 0)
                 revert("The product is still with Manufacturer, So no past Owners");
 
