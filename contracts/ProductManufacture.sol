@@ -29,11 +29,7 @@ contract ProductManufacture{
     mapping (address => uint[]) ownerOf;
 
     //Event announcing the manufacturing of a product
-    event newProductCreated(
-        uint _tokenId, 
-        string _name, 
-        uint _SerialNumber);
-
+    event newProductCreated(uint _tokenId, string _name, uint _SerialNumber);
 
     //MODIFIERS
 
@@ -68,7 +64,7 @@ contract ProductManufacture{
     }
 
     //Function to set Product name, serial number, warranty period
-    function setDetails(
+    function setProductDetails(
         uint _tokenId,
         string memory _name, 
         uint _serialNumber, 
@@ -82,28 +78,6 @@ contract ProductManufacture{
             _product[_tokenId].WarrantyPeriod = _warrantyPeriod;
             _product[_tokenId].DetailsStatus = true;
             emit newProductCreated (_tokenId, _name, _serialNumber);
-    }
-
-    //Function to view warranty status
-    function warrantyStatus(
-        uint _tokenId
-        ) public view returns(bool){
-            if((_product[_tokenId].FirstPurchaseDate + _product[_tokenId].WarrantyPeriod) > block.timestamp){
-                return true;
-            } else {
-                return false;
-            }
-    }
-
-    //Function to see the time remaining for warranty
-    function remainingWarrantyTime(
-        uint _tokenId
-        ) external view returns(uint){
-            if(warrantyStatus(_tokenId)){
-                return (_product[_tokenId].FirstPurchaseDate + _product[_tokenId].WarrantyPeriod - block.timestamp);
-            } else {
-                return 0;
-            }
     }
 
     //Function to set firstPurchaseDate
@@ -129,7 +103,7 @@ contract ProductManufacture{
     }         
 
     //Function to change Ownership or sell the Contract
-    function sendContract(
+    function transferToken(
         uint _tokenId, 
         address recieversAddress
         ) external isCurrentOwner(_tokenId) {

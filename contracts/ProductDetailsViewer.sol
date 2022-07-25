@@ -11,6 +11,14 @@ contract ProductDetailsViewer is ProductManufacture{
     //Address when the product isn't created
     address INCOMPLETE = 0x0000000000000000000000000000000000000000;
 
+    //To view all the tokens user holds
+    function viewMyTokens(
+        ) external view returns(uint[] memory){
+            if(userOwns[msg.sender] == 0)
+                revert("You don't own any products");
+            return ownerOf[msg.sender];
+    }
+
     //To view Manufacturers address
     function viewManufAddress(
         uint _tokenId
@@ -21,15 +29,7 @@ contract ProductDetailsViewer is ProductManufacture{
             return _product[_tokenId].ManufacturersAddress;
     }
 
-    //To view all the tokens user holds
-    function viewMyTokens(
-        ) external view returns(uint[] memory){
-            if(userOwns[msg.sender] == 0)
-                revert("You don't own any products");
-            return ownerOf[msg.sender];
-        }
-
-    //To view Product name
+    //To view Product Details i.e name, serial number and current owner
     function viewProductDetails(
         uint _tokenId
         ) external view returns(string memory, uint, address){
@@ -64,6 +64,34 @@ contract ProductDetailsViewer is ProductManufacture{
                 previousOwners[i] = _product[_tokenId].PastOwners[i];
             }
             return previousOwners;
+    }
+
+    //Function to view warranty status
+    function viewWarrantyStatus(
+        uint _tokenId
+        ) public view returns(bool){
+            if(!_product[_tokenId].WarrantyActivated)
+                revert("warranty of the token you are looking for isn't activated yet");
+
+            if((_product[_tokenId].FirstPurchaseDate + _product[_tokenId].WarrantyPeriod) > block.timestamp){
+                return true;
+            } else {
+                return false;
+            }
+    }
+
+    //Function to see the time remaining for warranty
+    function viewRemainingWarrantyTime(
+        uint _tokenId
+        ) public view returns(uint){
+            if(!_product[_tokenId].WarrantyActivated)
+                revert("warranty of the token you are looking for isn't activated yet");
+                
+            if(viewWarrantyStatus(_tokenId)){
+                return (_product[_tokenId].FirstPurchaseDate + _product[_tokenId].WarrantyPeriod - block.timestamp);
+            } else {
+                return 0;
+            }
     }
 
 }
