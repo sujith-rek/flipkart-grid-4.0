@@ -10,7 +10,7 @@ contract ProductManufacture{
         address ManufacturersAddress;          //Adddress of the product manufacturer
         string Name;                           //Name, Model of the product
         uint SerialNumber;                     //Manufacture Number or serial Number
-        uint WarrantyPeriod;                   //Warranty period in seconds
+        uint WarrantyPeriod;                   //Warranty period in days
         address CurrentOwner;                  //The Current owners address
         address[] PastOwners;                  //Addresses of past owners
         uint FirstPurchaseDate;                //The first purchase date from which warranty starts
@@ -75,7 +75,7 @@ contract ProductManufacture{
 
             _product[_tokenId].Name = _name;
             _product[_tokenId].SerialNumber = _serialNumber;
-            _product[_tokenId].WarrantyPeriod = _warrantyPeriod;
+            _product[_tokenId].WarrantyPeriod = _warrantyPeriod * 86400;
             _product[_tokenId].DetailsStatus = true;
             emit newProductCreated (_tokenId, _name, _serialNumber);
     }
@@ -88,6 +88,7 @@ contract ProductManufacture{
             _product[_tokenId].WarrantyActivated = true;
     }    
 
+    //function to remove a user token when he sells it to other user
     function removeUserToken(
         uint _tokenId,
         address _owner

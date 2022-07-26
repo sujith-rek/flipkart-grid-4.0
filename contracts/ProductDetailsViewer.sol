@@ -36,15 +36,20 @@ contract ProductDetailsViewer is ProductManufacture{
             if(_product[_tokenId].CurrentOwner == INCOMPLETE)
                 revert("The product You are searching isn't created yet");
             
+            if(_product[_tokenId].SerialNumber == 0)
+                revert("The product details are yet to be set");
+
             return (_product[_tokenId].Name, 
                     _product[_tokenId].SerialNumber, 
                     _product[_tokenId].CurrentOwner);
     }
     
-    //To view the total warranty priod of product
+    //To view the total warranty period of product
     function viewWarrantyPeriod(
         uint _tokenId
         ) external view returns(uint){
+            if(_product[_tokenId].SerialNumber == 0)
+                    revert("Warranty details are yet to be set");
             return _product[_tokenId].WarrantyPeriod;
     }
 
@@ -66,31 +71,18 @@ contract ProductDetailsViewer is ProductManufacture{
             return previousOwners;
     }
 
-    //Function to view warranty status
+    //Function to see the time remaining for warranty
     function viewWarrantyStatus(
         uint _tokenId
-        ) public view returns(bool){
-            if(!_product[_tokenId].WarrantyActivated)
-                revert("warranty of the token you are looking for isn't activated yet");
-
-            if((_product[_tokenId].FirstPurchaseDate + _product[_tokenId].WarrantyPeriod) > block.timestamp){
-                return true;
-            } else {
-                return false;
-            }
-    }
-
-    //Function to see the time remaining for warranty
-    function viewRemainingWarrantyTime(
-        uint _tokenId
-        ) public view returns(uint){
+        ) public view returns(string memory, uint){
             if(!_product[_tokenId].WarrantyActivated)
                 revert("warranty of the token you are looking for isn't activated yet");
                 
-            if(viewWarrantyStatus(_tokenId)){
-                return (_product[_tokenId].FirstPurchaseDate + _product[_tokenId].WarrantyPeriod - block.timestamp);
+            if((_product[_tokenId].FirstPurchaseDate + _product[_tokenId].WarrantyPeriod) > block.timestamp){
+                return ("Active",
+                       (_product[_tokenId].FirstPurchaseDate + _product[_tokenId].WarrantyPeriod - block.timestamp)/86400 );
             } else {
-                return 0;
+                return ("Expired", 0);
             }
     }
 
