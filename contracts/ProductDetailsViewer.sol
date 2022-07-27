@@ -4,7 +4,7 @@ pragma solidity ^0.8.4;
 import "./ProductManufacture.sol";
 
 //This contract contains all details to view the details
-//Set using the base Contract
+//Set using the ProductManufacture Contract
 //All functions are only view
 contract ProductDetailsViewer is ProductManufacture{
 
@@ -15,12 +15,12 @@ contract ProductDetailsViewer is ProductManufacture{
     function viewMyTokens(
         ) external view returns(uint[] memory){
             if(userOwns[msg.sender] == 0)
-                revert("You don't own any products");
+                revert("You don't own any products yet");
             return ownerOf[msg.sender];
     }
 
     //To view Manufacturers address
-    function viewManufAddress(
+    function viewManufacturerAddress(
         uint _tokenId
         ) external view returns(address) {
             if(_product[_tokenId].ManufacturersAddress == INCOMPLETE)
@@ -44,13 +44,13 @@ contract ProductDetailsViewer is ProductManufacture{
                     _product[_tokenId].CurrentOwner);
     }
     
-    //To view the total warranty period of product
+    //To view the total warranty priod of product
     function viewWarrantyPeriod(
         uint _tokenId
         ) external view returns(uint){
             if(_product[_tokenId].SerialNumber == 0)
                     revert("Warranty details are yet to be set");
-            return _product[_tokenId].WarrantyPeriod/86400;
+            return _product[_tokenId].WarrantyPeriod;
     }
 
     //To view all the previous owners of product

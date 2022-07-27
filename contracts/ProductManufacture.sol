@@ -51,7 +51,7 @@ contract ProductManufacture{
     //FUNCTIONS
 
     //Function to set Manufacturer Address
-    function setManufacturerAddress(
+    function createNewToken(
         uint _tokenId) external {
             if(_product[_tokenId].ManufacturerStatus) 
                 revert("Manufacturers address to be set only once");
@@ -80,7 +80,7 @@ contract ProductManufacture{
             emit newProductCreated (_tokenId, _name, _serialNumber);
     }
 
-    //Function to set firstPurchaseDate
+    //Function to set firstPurchaseDate from which warranty gets activated
     function setFirstPurchaseDate(
         uint _tokenId
         ) internal {
