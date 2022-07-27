@@ -20,12 +20,12 @@ contract ProductManufacture{
     }
 
     //Mapping a product with refernce to a tokenID
-    mapping (uint => WarrantyCard) _product; 
+    mapping (uint => WarrantyCard) _product;
 
     //Mapping to count number of tokens user own
     mapping (address => uint) userOwns;
 
-    //mapping holding the details of all tokens owned by owner
+    //Mapping holding the details of all tokens owned by owner
     mapping (address => uint[]) ownerOf;
 
     //Event announcing the manufacturing of a product

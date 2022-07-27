@@ -50,7 +50,7 @@ contract ProductDetailsViewer is ProductManufacture{
         ) external view returns(uint){
             if(_product[_tokenId].SerialNumber == 0)
                     revert("Warranty details are yet to be set");
-            return _product[_tokenId].WarrantyPeriod;
+            return _product[_tokenId].WarrantyPeriod/86400;
     }
 
     //To view all the previous owners of product
