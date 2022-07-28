@@ -54,7 +54,7 @@ contract ProductManufacture{
     function createNewToken(
         uint _tokenId) external {
             if(_product[_tokenId].ManufacturerStatus) 
-                revert("Manufacturers address to be set only once");
+                revert("token you are trying to create already exists, try differnt token ID");
 
             _product[_tokenId].ManufacturersAddress = msg.sender;
             _product[_tokenId].CurrentOwner = msg.sender;
@@ -72,6 +72,9 @@ contract ProductManufacture{
         ) external onlyManufacturer(_tokenId) {
             if(_product[_tokenId].DetailsStatus) 
                 revert("Details to be set only once");
+
+            if(_serialNumber < 1)
+                revert("Serial number should be greater than 0 ");
 
             _product[_tokenId].Name = _name;
             _product[_tokenId].SerialNumber = _serialNumber;

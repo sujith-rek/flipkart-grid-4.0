@@ -33,7 +33,7 @@ contract ProductDetailsViewer is ProductManufacture{
     function viewProductDetails(
         uint _tokenId
         ) external view returns(string memory, uint, address){
-            if(_product[_tokenId].CurrentOwner == INCOMPLETE)
+            if(_product[_tokenId].ManufacturersAddress == INCOMPLETE)
                 revert("The product You are searching isn't created yet");
             
             if(_product[_tokenId].SerialNumber == 0)
@@ -50,7 +50,7 @@ contract ProductDetailsViewer is ProductManufacture{
         ) external view returns(uint){
             if(_product[_tokenId].SerialNumber == 0)
                     revert("Warranty details are yet to be set");
-            return _product[_tokenId].WarrantyPeriod;
+            return _product[_tokenId].WarrantyPeriod/86400;
     }
 
     //To view all the previous owners of product
@@ -59,7 +59,7 @@ contract ProductDetailsViewer is ProductManufacture{
         )external view returns(address[] memory){
             uint numberOfPreviousOwners = _product[_tokenId].PastOwners.length;
 
-            if(_product[_tokenId].CurrentOwner == INCOMPLETE)
+            if(_product[_tokenId].ManufacturersAddress == INCOMPLETE)
                 revert("The product You are searching for isn't created yet");
             if(numberOfPreviousOwners == 0)
                 revert("The product is still with Manufacturer, So no past Owners");
