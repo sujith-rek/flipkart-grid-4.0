@@ -14,7 +14,6 @@ error Unauthorized();
 contract ProductManufacture{
 
     //@notice The following details of a product will be stored in the blockchain 
-    //@dev similar datatypes are grouped together to optimize gas consumption
     struct WarrantyCard{
         uint WarrantyPeriod;                   //Warranty period in days which is stored in seconds
         uint FirstPurchaseDate;                //The first purchase date from which warranty starts
