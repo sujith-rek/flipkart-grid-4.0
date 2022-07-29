@@ -2,7 +2,7 @@
 pragma solidity ^0.8.4;
 
 /*
-  @title 
+  @title: SandBox
   @notice This contract can be used to show ownership of a product you own using blockchain
   @dev All the functions will handle with the data of the product and use gas for every function 
   no function is set to view the details of it

@@ -3,7 +3,7 @@ pragma solidity ^0.8.4;
 
 import "./ProductManufacture.sol";
 
-/*@title:
+/*@title: SandBox
   @notice This contract is to view all the details of a product created using product manufacture contract
   @dev all functions are view and doesn't cost any gas to run them
 */
