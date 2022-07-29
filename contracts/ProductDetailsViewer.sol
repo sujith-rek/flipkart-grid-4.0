@@ -1,82 +1,82 @@
-// SPDX-License-Identifier: view LICENSE IN LICENSE
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.4;
 
 import "./ProductManufacture.sol";
 
-//This contract contains all details to view the details
-//Set using the ProductManufacture Contract
-//All functions are only view
+/*@title:
+  @notice This contract is to view all the details of a product created using product manufacture contract
+  @dev all functions are view and doesn't cost any gas to run them
+*/
+
+//@notice error if the product is not created
+error NotYetCreated();
+
 contract ProductDetailsViewer is ProductManufacture{
 
-    //Address when the product isn't created
-    address INCOMPLETE = 0x0000000000000000000000000000000000000000;
+    //@notice this helps to check if the product is created or not
+    //@dev uncreated products will have null address as any un-initialised addresses
+    modifier isProductCreated(
+        uint _tokenId){
+            if(_product[_tokenId].ManufacturersAddress == 0x0000000000000000000000000000000000000000)
+                revert NotYetCreated();
+            _;
+        }
 
-    //To view all the tokens user holds
+    //@notice displays all the products user owns
     function viewMyTokens(
         ) external view returns(uint[] memory){
             if(userOwns[msg.sender] == 0)
-                revert("You don't own any products yet");
+                revert("You don't own any products");
             return ownerOf[msg.sender];
     }
 
-    //To view Manufacturers address
+    //@notice displays manufacturers address
     function viewManufacturerAddress(
         uint _tokenId
-        ) external view returns(address) {
-            if(_product[_tokenId].ManufacturersAddress == INCOMPLETE)
-                revert("The product for the given token number doesn't exist yet");
-
+        ) external view isProductCreated(_tokenId) returns(address) {
             return _product[_tokenId].ManufacturersAddress;
     }
 
-    //To view Product Details i.e name, serial number and current owner
+    //@notice displays product details Name, seial number and its current owner
     function viewProductDetails(
         uint _tokenId
-        ) external view returns(string memory, uint, address){
-            if(_product[_tokenId].ManufacturersAddress == INCOMPLETE)
-                revert("The product You are searching isn't created yet");
-            
+        ) external view isProductCreated(_tokenId) returns(string memory, uint, address){
             if(_product[_tokenId].SerialNumber == 0)
-                revert("The product details are yet to be set");
+                revert("product details are to be set");
 
             return (_product[_tokenId].Name, 
                     _product[_tokenId].SerialNumber, 
                     _product[_tokenId].CurrentOwner);
     }
     
-    //To view the total warranty priod of product
+    //@notice  displays total warranty period of product
     function viewWarrantyPeriod(
         uint _tokenId
         ) external view returns(uint){
             if(_product[_tokenId].SerialNumber == 0)
-                    revert("Warranty details are yet to be set");
+                    revert("Warranty details are to be set");
             return _product[_tokenId].WarrantyPeriod/86400;
     }
 
-    //To view all the previous owners of product
+    //@notice displays all the previous owners of product
     function viewPreviousOwners(
         uint _tokenId
-        )external view returns(address[] memory){
-            uint numberOfPreviousOwners = _product[_tokenId].PastOwners.length;
+        )external view isProductCreated(_tokenId) returns(address[] memory){
+            if(_product[_tokenId].PastOwners.length == 0)
+                revert("no previous Owners");
 
-            if(_product[_tokenId].ManufacturersAddress == INCOMPLETE)
-                revert("The product You are searching for isn't created yet");
-            if(numberOfPreviousOwners == 0)
-                revert("The product is still with Manufacturer, So no past Owners");
-
-            address[] memory previousOwners = new address[](numberOfPreviousOwners);
-            for(uint i=0; i<numberOfPreviousOwners; i++){
-                previousOwners[i] = _product[_tokenId].PastOwners[i];
-            }
-            return previousOwners;
+            return _product[_tokenId].PastOwners;
     }
 
-    //Function to see the time remaining for warranty
+    //@notice displays warranty status and remaining warranty time
+    /*@dev returns a string warranty status and uint remaining warranty period
+           which will be caluculated useing current blocks timestamp
+    */
     function viewWarrantyStatus(
         uint _tokenId
         ) public view returns(string memory, uint){
             if(!_product[_tokenId].WarrantyActivated)
-                revert("warranty of the token you are looking for isn't activated yet");
+                revert("warranty isn't activated");
                 
             if((_product[_tokenId].FirstPurchaseDate + _product[_tokenId].WarrantyPeriod) > block.timestamp){
                 return ("Active",
